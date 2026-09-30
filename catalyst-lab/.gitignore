@@ -1,0 +1,9 @@
+node_modules/
+.next/
+__pycache__/
+*.pyc
+*.tsbuildinfo
+.env*
+!.env.example
+data/*.US.json
+data/consensus*.json
