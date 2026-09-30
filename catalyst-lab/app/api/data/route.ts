@@ -1,0 +1,2 @@
+import {readFile} from 'node:fs/promises';
+export async function GET(request:Request){const symbol=new URL(request.url).searchParams.get('symbol');if(symbol!=='NKE.US'&&symbol!=='SPY.US')return Response.json({error:'Supported symbols: NKE.US, SPY.US'},{status:400});try{return Response.json(JSON.parse(await readFile(`${process.cwd()}/data/${symbol}.json`,'utf8')))}catch{return Response.json({error:'Authorized local snapshot not imported'},{status:503})}}

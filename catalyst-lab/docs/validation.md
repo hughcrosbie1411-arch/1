@@ -6,4 +6,4 @@ The baseline runner was exercised on two source-verified SEC earnings filing dat
 
 PostgreSQL is not installed/provisioned in this execution environment. The SQL migration has not been runtime validated. Vercel team discovery returned zero teams and the deployment operation returned `McpServerError: Tool deploy_to_vercel not found`; CLI is absent. No preview or production URL exists.
 
-See final GitHub PR for web test/build verification. Continuous ingestion, fitted specialist models, audited consensus vintages and live model learning remain unimplemented. No paid infrastructure or automatic trading was enabled.
+The Next.js production build passed. Seven web calculation tests passed. Local production HTTP smoke checks returned 200 for the dashboard, health and NKE data routes, and 400 for an unsupported symbol. Browser rendering and mobile/keyboard interaction remain unverified. Continuous ingestion, fitted specialist models, audited consensus vintages and live model learning remain unimplemented. No paid infrastructure or automatic trading was enabled.

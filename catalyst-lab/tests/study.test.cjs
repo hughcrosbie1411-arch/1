@@ -1,0 +1,9 @@
+const test=require('node:test');const assert=require('node:assert/strict');const ts=require('typescript');const fs=require('fs');const Module=require('module');const m=new Module('study');m._compile(ts.transpileModule(fs.readFileSync('app/study.ts','utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS}}).outputText,'study');const {study,completeSessions}=m.exports;
+const c=(date,open,close)=>({timestamp:date+'T04:00:00Z',open:String(open),close:String(close),volume:1});const prices=[c('2025-03-20',90,100),c('2025-03-21',110,121),c('2025-03-24',122,123),c('2025-03-25',124,125)];const bench=new Map(prices.map(p=>[p.timestamp.slice(0,10),{...p,open:'100',close:'100'}]));
+test('after hours aligns next session, reaction captures gap',()=>{const r=study(prices,bench,'2025-03-20','after','reaction');assert.equal(r.entry,'2025-03-21');assert.equal(r.baseline,'2025-03-20');assert.ok(Math.abs(r.rows[0].stock-21)<1e-8);assert.equal(r.rows[1].end,'2025-03-25')});
+test('post release open excludes gap',()=>assert.ok(Math.abs(study(prices,bench,'2025-03-20','after','tradable').rows[0].stock-10)<1e-8));
+test('before open uses same day and prior close',()=>{const r=study(prices,bench,'2025-03-21','before','reaction');assert.equal(r.entry,'2025-03-21');assert.equal(r.baseline,'2025-03-20')});
+test('weekend aligns next session without another delay',()=>assert.equal(study(prices,bench,'2025-03-22','after','tradable').entry,'2025-03-24'));
+test('missing future horizons remain pending',()=>assert.equal(study(prices,bench,'2025-03-20','after','reaction').rows[2].stock,null));
+test('empty data and missing benchmark fail visibly',()=>{assert.match(study([],bench,'2025-03-20','after','reaction').error,/outside/);assert.match(study(prices,new Map(),'2025-03-20','after','reaction').error,/Benchmark/)});
+test('capture date excluded as incomplete',()=>assert.equal(completeSessions([c('2026-09-29',1,1),c('2026-09-30',1,1)]).length,1));
